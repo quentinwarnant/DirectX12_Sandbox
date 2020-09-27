@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+QSandbox/.vs/
+QSandbox/x64/
+x64/
