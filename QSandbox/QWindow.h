@@ -21,6 +21,11 @@ int Height = 600;
 bool FullScreen = false;
 
 
+// we will exit the program when this becomes false
+bool Running = true;
+
+
+
 // create a window
 bool InitializeWindow(HINSTANCE hInstance,
 	int ShowWnd,
