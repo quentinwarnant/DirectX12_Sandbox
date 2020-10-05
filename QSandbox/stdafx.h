@@ -11,6 +11,7 @@
 #include <DirectXMath.h>
 #include "d3dx12.h"
 
+//TODO: Move this out of global scope into logical systems
 //------------------------------------------------------------------------------------
 // direct3d variables
 const int frameBufferCount = 3; // number of buffers we want, 2 for double buffering, 3 for tripple buffering
@@ -29,14 +30,44 @@ UINT64 fenceValue[frameBufferCount]; // this value is incremented each frame. ea
 int frameIndex; // current rtv we are on
 int rtvDescriptorSize; // size of the rtv descriptor on the device (all front and back buffers will be the same size)
 
+
+
+ID3D12PipelineState* pipelineStateObject; // pso containing a pipeline state
+ID3D12RootSignature* rootSignature; // root signature defines data shaders will access
+D3D12_VIEWPORT viewport; // area that output from rasterizer will be stretched to.
+D3D12_RECT scissorRect; // the area to draw in. pixels outside that area will not be drawn onto
+ID3D12Resource* vertexBuffer; // a default buffer in GPU memory that we will load vertex data for our triangle into
+D3D12_VERTEX_BUFFER_VIEW vertexBufferView; // a structure containing a pointer to the vertex data in gpu memory
+                                           // the total size of the buffer, and the size of each element (vertex)
+
 //------------------------------------------------------------------------------------
 
 // this will only call release if an object exists (prevents exceptions calling release on non existant objects)
 #define SAFE_RELEASE(p) { if ( (p) ) { (p)->Release(); (p) = 0; } }
 
+
+struct ShadersByteCode
+{
+	D3D12_SHADER_BYTECODE vertexShaderBytecode;
+	D3D12_SHADER_BYTECODE pixelShaderBytecode;
+	
+};
+
+
 //function declarations
 // initializes direct3d 12
 bool InitD3D();
+
+bool CompileShaders(ShadersByteCode* shadersBytecode);
+
+D3D12_INPUT_LAYOUT_DESC  CreateInputLayout();
+
+D3D12_GRAPHICS_PIPELINE_STATE_DESC CreatePipelineStateObjectDescription(ShadersByteCode shadersByteCode, D3D12_INPUT_LAYOUT_DESC inputLayoutDesc,
+	DXGI_SAMPLE_DESC sampleDesc);
+
+void InitViewPort();
+void InitScissorRect();
+
 
 // main application loop
 void Mainloop();
@@ -51,4 +82,6 @@ void Render();
 void Cleanup(); 
 
 // wait until gpu is finished with command list
-void WaitForPreviousFrame(); 
+void WaitForPreviousFrame();
+
+
