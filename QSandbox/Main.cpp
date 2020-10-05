@@ -336,7 +336,10 @@ bool InitD3D()
 
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 40, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
 	// fill out an input layout description structure
@@ -381,9 +384,9 @@ bool InitD3D()
 
 	// a triangle
 	Vertex vList[] = {
-		{ { 0.0f, 0.5f, 0.5f } },
-		{ { 0.5f, -0.5f, 0.5f } },
-		{ { -0.5f, -0.5f, 0.5f } },
+		{ /*pos*/ 0.0f, 0.5f, 0.5f, /*normal*/ 0.0f, 0.0f, -1.0f, /*color*/ 1.0f, 1.0f,1.0f,1.0f, /*uv*/0.0f,1.0f },
+		{ /*pos*/ 0.5f, -0.5f, 0.5f, /*normal*/ 0.0f,0.0f, -1.0f, /*color*/ 1.0f, 0.0f,0.0f,1.0f, /*uv*/0.0f,1.0f },
+		{ /*pos*/ -0.5f, -0.5f, 0.5f, /*normal*/ 0.0f,0.0f, -1.0f, /*color*/ 0.0f, 0.0f,1.0f,1.0f, /*uv*/0.0f,1.0f }
 	};
 
 	int vBufferSize = sizeof(vList);
@@ -592,7 +595,7 @@ void UpdateD3DPipeline()
 	commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 
 	// Clear the render target by using the ClearRenderTargetView command
-	const float clearColor[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+	const float clearColor[] = { 0.0f, 0.5f, 0.7f, 1.0f };
 	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
 
